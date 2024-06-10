@@ -1,10 +1,10 @@
 #include "ble_switch_handler.h"
 #include "esphome.h"  // Include esphome.h
-#include "esphome/components/text_sensor/text_sensor.h"  // Include the text_sensor component
 
 #ifdef USE_SWITCH
 
 #include "esphome/core/log.h"
+#include "esphome/components/global/global_string.h"  // Include the global_string component
 
 using namespace esphome;  // Use the esphome namespace
 
@@ -24,15 +24,14 @@ void BLESwitchHandler::on_characteristic_written() {
     else
       get_component()->turn_off();
 
-    // Store the value in the text_sensor
-    auto on_value = id(on_value_text_sensor);
-    on_value->publish_state(std::to_string(on));
-    ESP_LOGD(TAG, "Published state to on_value_text_sensor");
+    // Store the value in the global
+    auto on_value_global = global_string::GlobalsComponent::get_global_by_id("on_value_global");
+    on_value_global->value() = std::to_string(on);
+    ESP_LOGD(TAG, "Published state to on_value_global");
   }
 }
-
-
 
 } // namespace esp32_ble_controller
 
 #endif
+
