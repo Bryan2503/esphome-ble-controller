@@ -14,8 +14,8 @@ static const char *TAG = "ble_switch_handler";
 
 void BLESwitchHandler::on_characteristic_written() {
   std::string value = get_characteristic()->getValue();
-  if (value.length() == 1) {
-    uint8_t on = value[0];
+  if (!value.empty()) {
+    uint8_t on = std::stoi(value);
     ESP_LOGD(TAG, "Switch chracteristic written: %d", on);
     if (on)
       get_component()->turn_on();
@@ -27,6 +27,7 @@ void BLESwitchHandler::on_characteristic_written() {
     on_value->publish_state(std::to_string(on));
   }
 }
+
 
 } // namespace esp32_ble_controller
 
